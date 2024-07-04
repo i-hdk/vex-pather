@@ -62,7 +62,6 @@
   <ItemGroup>
     <Compile Include="Assets\Point.cs" />
     <Compile Include="Assets\KickScript.cs" />
-    <Compile Include="Assets\PointCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
