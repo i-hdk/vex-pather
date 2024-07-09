@@ -30,6 +30,12 @@ public class Point : MonoBehaviour
         y = pos.y;
     }
 
+    public void SetPosition(Vector2 pos)
+    {
+        x = pos.x;
+        y = pos.y;
+    }
+
     public void SetIndex(int idx)
     {
         index = idx;
@@ -38,6 +44,11 @@ public class Point : MonoBehaviour
     public void SetFreeze(bool f)
     {
         freeze = f;
+    }
+
+    public Vector2 GetPosition()
+    {
+        return new Vector2(x, y);
     }
 
     // Update is called once per frame

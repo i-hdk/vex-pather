@@ -6,11 +6,14 @@ public class KickScript : MonoBehaviour
 {
     [SerializeField] private List<GameObject> points;
     [SerializeField] private GameObject defaultCircle;
+    [SerializeField] private List<GameObject> splines;
+    [SerializeField] private GameObject defaultSpline;
 
     // Start is called before the first frame update
     void Start()
     {
         defaultCircle = GameObject.Find("Circle");
+        defaultSpline = GameObject.Find("BezierPointTemplate");
     }
 
     //freezes all points besides idx
@@ -45,6 +48,30 @@ public class KickScript : MonoBehaviour
             points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count-1));
             points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count-1);
             //Debug.Log("pressed");
+        }
+        if (Input.GetKeyDown("space"))
+        {
+            points.Add(Instantiate(defaultCircle));
+            points[points.Count - 1].AddComponent<Point>();
+            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0f;
+            points[points.Count - 1].GetComponent<Point>().SetPosition(mouseWorldPos);
+            points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count - 1));
+            points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count - 1);
+
+            splines.Add(Instantiate(defaultSpline));
+            splines[splines.Count - 1].GetComponent<Spline>().SetPoint(3, points[points.Count - 1]);
+            for(int i = 0; i < 7; i++)
+            {
+                if (i == 3) continue;
+                points.Add(Instantiate(defaultCircle));
+                points[points.Count - 1].AddComponent<Point>();
+                points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count - 1));
+                points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count - 1);
+                splines[splines.Count - 1].GetComponent<Spline>().SetPoint(i, points[points.Count - 1]);
+            }
+            splines[splines.Count - 1].GetComponent<Spline>().FixToDefault();
+            splines[splines.Count - 1].GetComponent<Spline>().complete = true;
         }
     }
 }
