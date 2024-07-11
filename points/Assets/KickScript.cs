@@ -60,10 +60,9 @@ public class KickScript : MonoBehaviour
             points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count - 1);
 
             splines.Add(Instantiate(defaultSpline));
-            splines[splines.Count - 1].GetComponent<Spline>().SetPoint(3, points[points.Count - 1]);
-            for(int i = 0; i < 7; i++)
+            splines[splines.Count - 1].GetComponent<Spline>().SetPoint(0, points[points.Count - 1]);
+            for(int i = 1; i < 4; i++)
             {
-                if (i == 3) continue;
                 points.Add(Instantiate(defaultCircle));
                 points[points.Count - 1].AddComponent<Point>();
                 points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count - 1));
