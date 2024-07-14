@@ -47,7 +47,6 @@ public class KickScript : MonoBehaviour
             points[points.Count - 1].GetComponent<Point>().SetPosition(mouseWorldPos);
             points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count-1));
             points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count-1);
-            //Debug.Log("pressed");
         }
         if (Input.GetKeyDown("space"))
         {
@@ -60,8 +59,9 @@ public class KickScript : MonoBehaviour
             points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count - 1);
 
             splines.Add(Instantiate(defaultSpline));
-            splines[splines.Count - 1].GetComponent<Spline>().SetPoint(0, points[points.Count - 1]);
-            for(int i = 1; i < 4; i++)
+            splines[splines.Count - 1].GetComponent<Spline>().SetPoint((splines.Count == 1 ? 0 : 3), points[points.Count - 1]);
+            if (splines.Count > 1) splines[splines.Count - 1].GetComponent<Spline>().SetPoint(0, splines[splines.Count - 2].GetComponent<Spline>().GetPoint(3));
+            for(int i = 1; i < (splines.Count == 1 ? 4 : 3); i++)
             {
                 points.Add(Instantiate(defaultCircle));
                 points[points.Count - 1].AddComponent<Point>();
@@ -69,6 +69,24 @@ public class KickScript : MonoBehaviour
                 points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count - 1);
                 splines[splines.Count - 1].GetComponent<Spline>().SetPoint(i, points[points.Count - 1]);
             }
+            if(splines.Count > 1)
+            {
+                GameObject point1 = splines[splines.Count - 2].GetComponent<Spline>().GetPoint(2);
+                GameObject point2 = splines[splines.Count - 1].GetComponent<Spline>().GetPoint(1);
+                point1.GetComponent<Point>().SetOpposite(point2);
+                point2.GetComponent<Point>().SetOpposite(point1);
+            }
+
+            if (splines.Count == 1)
+            {
+                splines[0].GetComponent<Spline>().SetFirstSpline();
+                splines[0].GetComponent<Spline>().SetLastSpline(true);
+            }
+            else
+            {
+                splines[splines.Count - 2].GetComponent<Spline>().SetLastSpline(false);
+            }
+            splines[splines.Count-1].GetComponent<Spline>().SetLastSpline(true);
             splines[splines.Count - 1].GetComponent<Spline>().FixToDefault();
             splines[splines.Count - 1].GetComponent<Spline>().complete = true;
         }

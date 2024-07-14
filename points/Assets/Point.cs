@@ -11,6 +11,9 @@ public class Point : MonoBehaviour
     [HideInInspector] bool leftClickPressed = false;
     int index = -1;
     bool freeze;
+    GameObject oppositePoint = null; //the first and last points of 2 connecting beziers
+    float magnitude; //from handle to connecting point
+    Vector2 centerPointPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +25,11 @@ public class Point : MonoBehaviour
     public void SetName(string newName)
     {
         waitSetName = newName; //will change name in Update()
+    }
+
+    public string GetName()
+    {
+        return waitSetName;
     }
 
     public void SetPosition(Vector3 pos)
@@ -51,6 +59,31 @@ public class Point : MonoBehaviour
         return new Vector2(x, y);
     }
 
+    public void SetOpposite(GameObject op)
+    {
+        oppositePoint = op;
+        //Debug.Log(waitSetName + oppositePoint.GetComponent<Point>().GetName());
+    }
+
+    public GameObject GetOpposite()
+    {
+        return oppositePoint;
+    }
+
+    public void SetMagnitude(float m)
+    { 
+        magnitude = m;
+    }
+
+    public float GetMagnitude(){ 
+        return magnitude;
+    }
+
+    public void SetCenterPointPosition(Vector2 c)
+    {
+        centerPointPosition = c;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -71,6 +104,13 @@ public class Point : MonoBehaviour
             if (leftClickPressed&&!freeze)
             {
                 SetPosition(mouseWorldPos);
+                if (oppositePoint != null)
+                {
+                    float oldMagnitude = oppositePoint.GetComponent<Point>().GetMagnitude();
+                    Vector2 newDirection = (centerPointPosition - new Vector2(mouseWorldPos.x, mouseWorldPos.y)).normalized;
+                    oppositePoint.GetComponent<Point>().SetPosition(centerPointPosition + newDirection * oldMagnitude);
+                }
+                else Debug.Log("hellooooooo");
             }
         }
         else if (Input.GetMouseButtonUp(0))

@@ -5,11 +5,11 @@ using UnityEngine;
 public class Spline : MonoBehaviour
 {
     [SerializeField] private List<GameObject> points;
-    [HideInInspector] private List<GameObject> curvePoints;
     [HideInInspector] private GameObject defaultSquare;
     [HideInInspector] private Vector2[,] linearPointsPosition, quadraticPointsPosition, cubicPointsPosition;
-    [HideInInspector] private GameObject[,] linearPoints, quadraticPoints, cubicPoints;
-    [HideInInspector] private bool[,] linearPointsCreated, quadraticPointsCreated, cubicPointsCreated;
+    [HideInInspector] private GameObject[,] cubicPoints;
+    [HideInInspector] private bool[,] cubicPointsCreated;
+    bool firstSpline, lastSpline;
 
     private int totalSteps = 100;
     public bool complete = false;
@@ -25,12 +25,9 @@ public class Spline : MonoBehaviour
         linearPointsPosition = new Vector2[3, totalSteps];
         quadraticPointsPosition = new Vector2[2,totalSteps];
         cubicPointsPosition = new Vector2[1,totalSteps];
-        linearPoints = new GameObject[3, totalSteps];
-        quadraticPoints = new GameObject[2, totalSteps];
         cubicPoints = new GameObject[1, totalSteps];
-        linearPointsCreated = new bool[3, totalSteps];
-        quadraticPointsCreated = new bool[2, totalSteps];
         cubicPointsCreated = new bool[1, totalSteps];
+        firstSpline = false;
     }
 
     public void SetPoint(int x, GameObject point)
@@ -38,8 +35,27 @@ public class Spline : MonoBehaviour
         points[x] = point;
     }
 
+    public GameObject GetPoint(int x) { return points[x]; }
+
+    public void SetFirstSpline()
+    {
+        firstSpline = true;
+    }
+
+    public void SetLastSpline(bool last)
+    {
+        lastSpline = last;
+    }
+
     public void FixToDefault()
     {
+        if (!firstSpline)
+        {
+            Vector2 otherSplinePointPos = points[1].GetComponent<Point>().GetOpposite().GetComponent<Point>().GetPosition();
+            points[1].GetComponent<Point>().SetPosition(-otherSplinePointPos + 2*points[0].GetComponent<Point>().GetPosition());
+            points[2].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition() + new Vector2(3, -2));
+            return;
+        }
         points[1].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition()+new Vector2(2,2));
         points[2].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition() + new Vector2(3, -2));
         points[3].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition() + new Vector2(5, 0));
@@ -56,9 +72,6 @@ public class Spline : MonoBehaviour
                     Vector2 p0 = points[i].GetComponent<Point>().GetPosition();
                     Vector2 p1 = points[i + 1].GetComponent<Point>().GetPosition();
                     linearPointsPosition[i, t] = (normalizedT * p1 + (1 - normalizedT) * p0);
-                    //if(linearPointsCreated[i,t]==false) linearPoints[i,t] = Instantiate(defaultSquare);
-                    //linearPointsCreated[i,t] = true;
-                    //linearPoints[i, t].GetComponent<Transform>().position = (normalizedT * p1 + (1 - normalizedT) * p0);
                 }
             }
             for(int i = 0; i < 2; i++)
@@ -84,6 +97,10 @@ public class Spline : MonoBehaviour
                     cubicPoints[i, t].GetComponent<Transform>().position = (normalizedT * p1 + (1 - normalizedT) * p0);
                 }
             }
+            points[1].GetComponent<Point>().SetMagnitude((points[1].GetComponent<Point>().GetPosition() - points[0].GetComponent<Point>().GetPosition()).magnitude);
+            points[2].GetComponent<Point>().SetMagnitude((points[3].GetComponent<Point>().GetPosition() - points[2].GetComponent<Point>().GetPosition()).magnitude);
+            points[1].GetComponent<Point>().SetCenterPointPosition(points[0].GetComponent<Point>().GetPosition());
+            points[2].GetComponent<Point>().SetCenterPointPosition(points[3].GetComponent<Point>().GetPosition());
         }
     }
 }
