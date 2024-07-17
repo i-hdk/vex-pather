@@ -63,6 +63,7 @@
     <Compile Include="Assets\Point.cs" />
     <Compile Include="Assets\KickScript.cs" />
     <Compile Include="Assets\Spline.cs" />
+    <Compile Include="Assets\Car.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

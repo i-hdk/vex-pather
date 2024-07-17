@@ -11,7 +11,7 @@ public class Spline : MonoBehaviour
     [HideInInspector] private bool[,] cubicPointsCreated;
     bool firstSpline, lastSpline;
 
-    private int totalSteps = 100;
+    public int totalSteps = 100;
     public bool complete = false;
 
     // Start is called before the first frame update
@@ -59,6 +59,10 @@ public class Spline : MonoBehaviour
         points[1].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition()+new Vector2(2,2));
         points[2].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition() + new Vector2(3, -2));
         points[3].GetComponent<Point>().SetPosition(points[0].GetComponent<Point>().GetPosition() + new Vector2(5, 0));
+    }
+    public Vector2 GetPointPosition(int t)
+    {
+        return cubicPointsPosition[0,t];
     }
     void FixedUpdate()
     {

@@ -35,6 +35,14 @@ public class KickScript : MonoBehaviour
         }
     }
 
+    public int GetSplineCount() { 
+        return splines.Count; 
+    }
+    public Spline GetSpline(int idx)
+    {
+        return splines[idx].GetComponent<Spline>();
+    }
+
     // Update is called once per frame
     void Update()
     {
