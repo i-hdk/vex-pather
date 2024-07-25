@@ -43,6 +43,16 @@ public class KickScript : MonoBehaviour
         return splines[idx].GetComponent<Spline>();
     }
 
+    public float GetTotalArcLength()
+    {
+        float s = 0;
+        foreach(GameObject spline in splines)
+        {
+            s += spline.GetComponent<Spline>().GetArcLength();
+        }
+        return s;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -97,6 +107,14 @@ public class KickScript : MonoBehaviour
             splines[splines.Count-1].GetComponent<Spline>().SetLastSpline(true);
             splines[splines.Count - 1].GetComponent<Spline>().FixToDefault();
             splines[splines.Count - 1].GetComponent<Spline>().complete = true;
+        }
+    }
+    private void FixedUpdate()
+    {
+        //Debug.Log(GetTotalArcLength());
+        if (splines.Count > 0)
+        {
+            Debug.Log(splines[0].GetComponent<Spline>().FindNewPosition(0));
         }
     }
 }

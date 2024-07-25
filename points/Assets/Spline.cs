@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Spline : MonoBehaviour
 {
@@ -63,6 +64,39 @@ public class Spline : MonoBehaviour
     public Vector2 GetPointPosition(int t)
     {
         return cubicPointsPosition[0,t];
+    }
+
+    //numerical integration w/ arc length of parametric curve formula: https://math.libretexts.org/Bookshelves/Calculus/Calculus_(OpenStax)/11%3A_Parametric_Equations_and_Polar_Coordinates/11.02%3A_Calculus_of_Parametric_Curves
+    public float GetArcLength()
+    {
+        double s = 0;
+        for(int i = 1; i < totalSteps; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0,i].x - cubicPointsPosition[0,i-1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+        }
+        return (float)s;
+    }
+
+    public Vector2 FindNewPosition(double desiredLength)
+    {
+        double s = 0;
+        for(int i = 1; i < totalSteps; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+            if (s >= desiredLength)
+            {
+                return cubicPointsPosition[0,i];
+            }
+        }
+        return new Vector2(0, 0);
     }
     void FixedUpdate()
     {
