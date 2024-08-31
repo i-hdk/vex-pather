@@ -12,7 +12,7 @@ public class Spline : MonoBehaviour
     [HideInInspector] private bool[,] cubicPointsCreated;
     bool firstSpline, lastSpline;
 
-    public int totalSteps = 100;
+    public int totalSteps = 2000;
     public bool complete = false;
 
     // Start is called before the first frame update
@@ -97,6 +97,79 @@ public class Spline : MonoBehaviour
             }
         }
         return new Vector2(0, 0);
+    }
+
+    public float GetPartialArcLength(double oldLength, double newLength)
+    {
+        if (oldLength > newLength) return 0;
+        int oldT = 0;
+        int newT = 0;
+        double s = 0;
+        for (int i = 1; i < totalSteps; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+            if (s >= oldLength)
+            {
+                oldT = i;
+                break;
+            }
+        }
+        s = 0;
+        for (int i = 1; i < totalSteps; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+            if (s >= newLength)
+            {
+                newT = i;
+                break;
+            }
+        }
+        s = 0;
+        for (int i = oldT; i <= newT; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+        }
+        return (float)s;
+    }
+
+    public float GetCurvatureRadius(double desiredLength)
+    {
+        int p = 0;
+        double s = 0;
+        double dx, dy;
+        for (int i = 1; i < totalSteps-2; i++)
+        {
+            //assuming each t is one step
+            dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+            p = i;
+            if (s >= desiredLength)
+            {
+                break;
+            }
+        }
+        double dx1 = cubicPointsPosition[0, p+1].x - cubicPointsPosition[0, p].x;
+        double dx2 = cubicPointsPosition[0, p + 2].x - cubicPointsPosition[0, p+1].x;
+        double dy1 = cubicPointsPosition[0, p + 1].y - cubicPointsPosition[0, p].y;
+        double dy2 = cubicPointsPosition[0, p + 2].y - cubicPointsPosition[0, p+1].y;
+        dx = dx2 - dx1;
+        dy = dy2 - dy1;
+        return (float)(Math.Pow(dx1*dx1+dy1*dy1,1.5)/(dx*dy1-dy*dx1));
+
     }
     void FixedUpdate()
     {

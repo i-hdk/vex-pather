@@ -114,7 +114,7 @@ public class KickScript : MonoBehaviour
         //Debug.Log(GetTotalArcLength());
         if (splines.Count > 0)
         {
-            Debug.Log(splines[0].GetComponent<Spline>().FindNewPosition(0));
+            //Debug.Log(splines[0].GetComponent<Spline>().FindNewPosition(0));
         }
     }
 }

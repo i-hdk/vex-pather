@@ -9,7 +9,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{381B04A2-8D71-4BD0-503B-50871A1F2A35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -64,6 +65,9 @@
     <Compile Include="Assets\KickScript.cs" />
     <Compile Include="Assets\Spline.cs" />
     <Compile Include="Assets\Car.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\test.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
