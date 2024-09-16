@@ -5,7 +5,7 @@ using System.IO;
 
 public class Car : MonoBehaviour
 {
-    string filename = "";
+    //string filename = "";
 
     bool followPath;
     const int fixedSecondsPerBezier = 3;
@@ -13,15 +13,15 @@ public class Car : MonoBehaviour
     KickScript kickScript;
     const float stepSize = 5; //want 5 per sec, fixedUpdate runs 50 times per sec, so 5 per 50 times, 0.1 per fixedupdate
     double prevOverLength = 0;
-    TextWriter tw;
+    //TextWriter tw;
 
     // Start is called before the first frame update
     void Start()
     {
-        filename = Application.dataPath + "/test.txt";
+        //filename = Application.dataPath + "/test.txt";
         followPath = false;
         kickScript = GameObject.Find("GameObject").GetComponent<KickScript>();
-        tw = new StreamWriter(filename, false);
+        //tw = new StreamWriter(filename, false);
     }
 
     // Update is called once per frame
@@ -65,7 +65,7 @@ public class Car : MonoBehaviour
             if (currentBezier >= kickScript.GetSplineCount())
             {
                 followPath = false;
-                tw.Close();
+                //tw.Close();
             }
             else
             {
@@ -80,7 +80,7 @@ public class Car : MonoBehaviour
                 //Debug.Log(partialArc);
                 //Debug.Log(radiusOfCurvature);
                 prevOverLength = overLength;
-                tw.WriteLine(elapsedTime + " " + partialArc + " " + radiusOfCurvature);
+                //tw.WriteLine(elapsedTime + " " + partialArc + " " + radiusOfCurvature);
             }
         }
     }

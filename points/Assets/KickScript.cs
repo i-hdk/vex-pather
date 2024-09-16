@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class KickScript : MonoBehaviour
@@ -8,12 +10,16 @@ public class KickScript : MonoBehaviour
     [SerializeField] private GameObject defaultCircle;
     [SerializeField] private List<GameObject> splines;
     [SerializeField] private GameObject defaultSpline;
+    TextWriter tw;
+    string filename = "";
 
     // Start is called before the first frame update
     void Start()
     {
         defaultCircle = GameObject.Find("Circle");
         defaultSpline = GameObject.Find("BezierPointTemplate");
+        filename = Application.dataPath + "/test.txt";
+        tw = new StreamWriter(filename, false);
     }
 
     //freezes all points besides idx
@@ -51,6 +57,15 @@ public class KickScript : MonoBehaviour
             s += spline.GetComponent<Spline>().GetArcLength();
         }
         return s;
+    }
+
+    public Vector2 UDtoInches(Vector2 a)
+    {
+        Vector2 b = new Vector2();
+        b.x = a.x + 13.383f;
+        b.y = a.y + 13.206f;
+        b *= 5.32f;
+        return b;
     }
 
     // Update is called once per frame
@@ -107,6 +122,15 @@ public class KickScript : MonoBehaviour
             splines[splines.Count-1].GetComponent<Spline>().SetLastSpline(true);
             splines[splines.Count - 1].GetComponent<Spline>().FixToDefault();
             splines[splines.Count - 1].GetComponent<Spline>().complete = true;
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            for(int i = 0; i < splines.Count; i++)
+            {
+                Spline ss = splines[i].GetComponent<Spline>();
+                tw.WriteLine(UDtoInches(ss.GetPoint(0).GetComponent<Point>().GetPosition()) + " " + UDtoInches(ss.GetPoint(1).GetComponent<Point>().GetPosition()) + " " + UDtoInches(ss.GetPoint(2).GetComponent<Point>().GetPosition())+" "+ UDtoInches(ss.GetPoint(3).GetComponent<Point>().GetPosition()));
+            }
+            tw.Close();
         }
     }
     private void FixedUpdate()
