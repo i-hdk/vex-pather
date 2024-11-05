@@ -127,6 +127,7 @@ public class KickScript : MonoBehaviour
         {
             for(int i = 0; i < splines.Count; i++)
             {
+                Debug.Log("pressing s");
                 Spline ss = splines[i].GetComponent<Spline>();
                 tw.WriteLine(UDtoInches(ss.GetPoint(0).GetComponent<Point>().GetPosition()) + " " + UDtoInches(ss.GetPoint(1).GetComponent<Point>().GetPosition()) + " " + UDtoInches(ss.GetPoint(2).GetComponent<Point>().GetPosition())+" "+ UDtoInches(ss.GetPoint(3).GetComponent<Point>().GetPosition()));
             }
