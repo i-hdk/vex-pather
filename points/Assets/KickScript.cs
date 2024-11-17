@@ -83,18 +83,18 @@ public class KickScript : MonoBehaviour
     public Vector2 UDtoInches(Vector2 a)
     {
         Vector2 b = new Vector2();
-        b.x = a.x + 13.383f;
-        b.y = a.y + 13.206f;
-        b *= 5.32f;
+        b.x = a.x + 13.38f;
+        b.y = a.y + 13.23f;
+        b *= 5.26905829596f;
         return b;
     }
 
     public Vector2 InchestoUD(Vector2 a)
     {
         Vector2 b = new Vector2();
-        b = a/5.32f;
-        b.x -= 13.383f;
-        b.y -= 13.206f;
+        b = a/ 5.26905829596f;
+        b.x -= 13.38f;
+        b.y -= 13.23f;
         return b;
     }
 
