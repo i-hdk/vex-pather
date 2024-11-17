@@ -7,6 +7,7 @@ using UnityEngine;
 public class KickScript : MonoBehaviour
 {
     [SerializeField] private List<GameObject> points;
+    private int lastClickedPoint = -1;
     [SerializeField] private GameObject defaultCircle;
     [SerializeField] private List<GameObject> splines;
     [SerializeField] private GameObject defaultSpline;
@@ -25,11 +26,31 @@ public class KickScript : MonoBehaviour
     //freezes all points besides idx
     public void FreezeAllExcept(int idx)
     {
-        for(int i = 0; i < points.Count; i++)
+        for (int i = 0; i < points.Count; i++)
         {
             if (i == idx) continue;
             points[i].GetComponent<Point>().SetFreeze(true);
         }
+        lastClickedPoint = idx;
+    }
+
+    public void ChangeLastPointPosition(Vector2 newPos)
+    {
+        if(lastClickedPoint!=-1) points[lastClickedPoint].GetComponent<Point>().SetPosition(newPos);
+    }
+
+    public void ChangeLastPointPosition(Vector3 newPos)
+    {
+        if (lastClickedPoint != -1) points[lastClickedPoint].GetComponent<Point>().SetPosition(newPos);
+    }
+
+    public Vector2 LastPointPosition()
+    {
+        if (lastClickedPoint != -1)
+        {
+            return UDtoInches(points[lastClickedPoint].GetComponent<Point>().GetPosition());
+        }
+        return new Vector2(-1, -1);
     }
 
     //unfreezes all points
@@ -68,19 +89,18 @@ public class KickScript : MonoBehaviour
         return b;
     }
 
+    public Vector2 InchestoUD(Vector2 a)
+    {
+        Vector2 b = new Vector2();
+        b = a/5.32f;
+        b.x -= 13.383f;
+        b.y -= 13.206f;
+        return b;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            points.Add(Instantiate(defaultCircle));
-            points[points.Count - 1].AddComponent<Point>();
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0f;
-            points[points.Count - 1].GetComponent<Point>().SetPosition(mouseWorldPos);
-            points[points.Count - 1].GetComponent<Point>().SetName("point " + (points.Count-1));
-            points[points.Count - 1].GetComponent<Point>().SetIndex(points.Count-1);
-        }
         if (Input.GetKeyDown("space"))
         {
             points.Add(Instantiate(defaultCircle));

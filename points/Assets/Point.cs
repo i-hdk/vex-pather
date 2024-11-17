@@ -110,7 +110,6 @@ public class Point : MonoBehaviour
                     Vector2 newDirection = (centerPointPosition - new Vector2(mouseWorldPos.x, mouseWorldPos.y)).normalized;
                     oppositePoint.GetComponent<Point>().SetPosition(centerPointPosition + newDirection * oldMagnitude);
                 }
-                else Debug.Log("hellooooooo");
             }
         }
         else if (Input.GetMouseButtonUp(0))

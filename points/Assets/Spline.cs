@@ -99,6 +99,35 @@ public class Spline : MonoBehaviour
         return new Vector2(0, 0);
     }
 
+    public float FindNewRotation(double desiredLength)
+    {
+        double s = 0;
+        for (int i = 1; i < totalSteps; i++)
+        {
+            //assuming each t is one step
+            double dx = cubicPointsPosition[0, i].x - cubicPointsPosition[0, i - 1].x;
+            double dy = cubicPointsPosition[0, i].y - cubicPointsPosition[0, i - 1].y;
+            double integrand = Math.Sqrt(dx * dx + dy * dy);
+            s += integrand;
+            if (s >= desiredLength)
+            {
+                float t = (float)(i) / (float)(totalSteps);
+                Vector2 p0 = points[0].GetComponent<Point>().GetPosition();
+                Vector2 p1 = points[1].GetComponent<Point>().GetPosition();
+                Vector2 p2 = points[2].GetComponent<Point>().GetPosition();
+                Vector2 p3 = points[3].GetComponent<Point>().GetPosition();
+                Vector2 term1 = 3 * ((1 - t) * (1 - t)) * (p1 - p0);
+                Vector2 term2 = 6 * (1 - t) * t * (p2 - p1);
+                Vector2 term3 = 3 * (t*t) * (p3 - p2);
+                Vector2 derivative = term1 + term2 + term3;
+                if (derivative.x == 0 && derivative.y > 0) return 0;
+                else if (derivative.x == 0 && derivative.y < 0) return 180;
+                return (float)(Math.Atan2(derivative.y, derivative.x) * 180.0 / Math.PI - 90.0);
+            }
+        }
+        return 0;
+    }
+
     public float GetPartialArcLength(double oldLength, double newLength)
     {
         if (oldLength > newLength) return 0;

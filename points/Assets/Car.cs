@@ -70,8 +70,17 @@ public class Car : MonoBehaviour
             else
             {
                 double overLength = kickScript.GetSpline(currentBezier).GetArcLength() - (totalMeasuredLength - totalLengthByNow);
+                
                 Vector2 newPosition = kickScript.GetSpline(currentBezier).FindNewPosition(overLength);
                 GetComponent<Transform>().position = newPosition;
+
+                float toRotate = kickScript.GetSpline(currentBezier).FindNewRotation(overLength) - transform.eulerAngles.z;
+                transform.eulerAngles = new Vector3(
+                    transform.eulerAngles.x,
+                    transform.eulerAngles.y,
+                    transform.eulerAngles.z+toRotate
+                );
+
                 double partialArc = kickScript.GetSpline(currentBezier).GetPartialArcLength(prevOverLength, overLength);
                 double estLength;
                 if (overLength > prevOverLength) estLength = (prevOverLength + overLength) / 2;
